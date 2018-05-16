@@ -6,6 +6,7 @@ public class CardFlipper : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private CardModel model;
     private float originalXScale;
+    private float originalZPosition;
 
     public AnimationCurve scaleCurve;
     public float duration = 0.5f;
@@ -15,6 +16,7 @@ public class CardFlipper : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         model = GetComponent<CardModel>();
         originalXScale = transform.localScale.x;
+        originalZPosition = transform.localPosition.z;
     }
 
     public void FlipCard(Sprite startImage, Sprite endImage, int cardIndex)
@@ -38,6 +40,11 @@ public class CardFlipper : MonoBehaviour
             Vector3 localScale = transform.localScale;
             localScale.x = scale * originalXScale;
             transform.localScale = localScale;
+
+            // moving the card towards/away from the camera (i.e. only moving on the Z axis)
+            Vector3 localPosition = transform.localPosition;
+            localPosition.z = scale * originalZPosition;
+            transform.localPosition = localPosition;
 
             // if card is halfway through transition, switch card face to card back
             if (time >= 0.5f)
