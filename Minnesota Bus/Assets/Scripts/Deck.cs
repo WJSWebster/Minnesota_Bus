@@ -31,7 +31,7 @@ public class Deck : MonoBehaviour
 
         for(int i = 0; i < length; i++)
         {
-            target = r.Next(0, length); ;
+            target = i + r.Next(length - i); ;
 
             temp = cards[target];
             cards[target] = cards[i];
