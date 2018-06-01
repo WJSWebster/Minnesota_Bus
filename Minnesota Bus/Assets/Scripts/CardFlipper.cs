@@ -59,7 +59,7 @@ public class CardFlipper : MonoBehaviour
             model.ToggleFace(false);
         else
         {
-            model.cardIndex = cardIndex;
+            model.Index = cardIndex;
             model.ToggleFace(true);
         }
     }

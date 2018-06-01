@@ -13,7 +13,7 @@ public class DebugChangeCard : MonoBehaviour {
         cardModel = card.GetComponent<CardModel>();
         flipper = card.GetComponent<CardFlipper>();
     }
-
+    /*
     public void Hit()
     {
         if (cardIndex >= cardModel.faces.Length) // final card face transitioning to the card back
@@ -35,5 +35,5 @@ public class DebugChangeCard : MonoBehaviour {
             //cardModel.ToggleFace(true);
             cardIndex++;
         }        
-    }
+    }*/
 }
