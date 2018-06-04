@@ -87,32 +87,31 @@ public class CardStackView : MonoBehaviour
 
                 //i.position = position;  // TODO find out how to grab .transform.position from Debug Dealer
 
-                Sprite[] tempFaces = AddCard(position, i.Index, cardNo);
-                if (tempFaces != null) // TODO this is a very temporary fix for all cardModel objects not having a faces Sprite[] for some reason? INVESTIGATE
-                    i.faces = tempFaces;
+                AddCard(position, i, cardNo);
 
                 cardNo++;
             }
         }
     }
 
-    Sprite[] AddCard(Vector3 position, int cardIndex, int positionalIndex)
+    void AddCard(Vector3 newPosition, CardModel card, int positionalIndex)
     {
-        if (fetchedCards.ContainsKey(cardIndex)) // If this card is already in fetchedCards
-            return null;
+        if (fetchedCards.ContainsKey(card.Index)) // If this card is already in fetchedCards
+            return;
 
         GameObject cardCopy = (GameObject)Instantiate(cardPrefab); // instantiate takes in a GameObject and copies it
-        cardCopy.transform.position = position; 
+        cardCopy.transform.position = newPosition; 
 
         CardModel cardModel = cardCopy.GetComponent<CardModel>(); // what is this doing here?!? Do we still need to do this now that cards is a list of CardModels rather than ints?
-        cardModel.Index = cardIndex;
-        cardModel.ToggleFace(true); // TODO change to !deck.IsDealersHand
+        cardModel.Index = card.Index;
+        cardModel.ToggleFace(card.ShowFace); // TODO change to !deck.IsDealersHand OR card.ShowFace
 
         SpriteRenderer sp = cardCopy.GetComponent<SpriteRenderer>();
         sp.sortingOrder = 51 - positionalIndex; // reverses the order in which cards are drawn
 
-        fetchedCards.Add(cardIndex, cardCopy);
+        fetchedCards.Add(card.Index, cardCopy);
 
-        return cardModel.faces;
+        if(cardModel.faces != null) 
+            card.faces = cardModel.faces; // TODO this is a very temporary fix for all cardModel objects not having a faces Sprite[] for some reason? INVESTIGATE
     }
 }

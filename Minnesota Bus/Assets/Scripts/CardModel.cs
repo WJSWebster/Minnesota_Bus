@@ -23,6 +23,28 @@ public class CardModel : MonoBehaviour {
     //public Sprite face; // == null in CardStackViews
     public Sprite back;
 
+    private bool showFace; // the number that will be used to find the appropriate card in the faces array
+    public bool ShowFace
+    {
+        get
+        {
+            return this.showFace;
+        }
+        set
+        {
+            this.showFace = value;
+
+            if (value)
+            {
+                // CardFlipper.FlipCard(faces[index], back, index);
+            }
+            else
+            {
+                // CardFlipper.FlipCard(back, faces[index], index);
+            }
+        }
+    }
+
     //public Vector3 position;
 
     public GameObject cardPrefab; 
@@ -55,9 +77,11 @@ public class CardModel : MonoBehaviour {
     public Suits suit;
 
     // Constructor
-    public CardModel(int _index = 0/*, Sprite _face = null, Sprite _back = null*/) // currently, the only place this is used is in CardStack:CreateDeck()
+    public CardModel(int _index = 0) // currently, the only place this is used is in CardStack:CreateDeck()
     {
         Index = _index;
+
+        ShowFace = false; // just for the time being, any cards in the player's hand will be made to show their face eventually...
 
         //face = _face;
         //back = _back;
