@@ -8,7 +8,6 @@ public class GameController : MonoBehaviour
 {
     private int round;
     private int cardNo;
-    private GameObject cardView;
     private GameObject resultText;
     private bool? playersChoice; // is made null at the end of each round, ∴ needs to be a nullable bool
 
@@ -26,16 +25,32 @@ public class GameController : MonoBehaviour
     }
     public CardStack dealer;
     public CardStack player;
-    //public CardStackView stackView; // There's currently no uses of this?? INVESTIGATE
-    public GameObject busMeButton;
-    public GameObject doneButton;
     public GameObject[] rounds;
     public GameObject resultTextParent;
-    public CardStackView cardStackView;
     private bool waiting;
 
     private void Start()
     {
+        SetupGame();
+    }
+
+    public void ResetGame()
+    {
+        // set any result text to inactive:
+        //resultText.SetActive(false);
+        resultTextParent.SetActive(false);
+
+        // set all buttons to inactive:
+        //rounds[cardNo].SetActive(false);
+        foreach (GameObject round in rounds)
+        {
+            round.SetActive(false);
+        }
+
+        // removes all elements of the views & all elements of the cardStack models:
+        player.GetComponent<CardStackView>().Clear();
+        dealer.GetComponent<CardStackView>().Clear();
+        
         SetupGame();
     }
 
@@ -47,32 +62,11 @@ public class GameController : MonoBehaviour
         print("player.CardsCapacity: " + player.CardsCapacity); // doesnt work here?!
 
         for (int i = 0; i < player.CardsCapacity; i++) 
-            player.Push(dealer.Pop());
+            player.Push(dealer.Pop()); // the push & pop method should indicate to the cardStacks that they should ShowCards() // TODO Investigate
 
-        //RoundSetup();
-    }
-
-    public void HitMe() // This method is old, is now moved into Start TODO remove!
-    { // Think of this method as the player's cursor, for now:
-
-        //Debug.Log("player.Count = " + player.GetCards().Count);
-
-        //round = player.CardsCount;
-
-        //print("player.CardsCount: " + player.CardsCount);
-        //print("player.CardsCapacity: " + player.CardsCount);
-
-        /*if (player.CardsCount < player.CardsCapacity) // because we have already declared that the player cards list cannot have more than 4 cards in it
-        {
-            player.Push(dealer.Pop()); // takes a card from the dealer's list, and places it at the front of the player's
-
-            if (player.CardsCount == player.CardsCapacity)
-                busMeButton.SetActive(true);
-        }
-        else
-            Debug.Log("Cannot Hit, Player has max number of cards in his deck!");
-        */
-
+        // called here in case ResetCards()
+        player.GetComponent<CardStackView>().ShowCards();
+        dealer.GetComponent<CardStackView>().ShowCards();
         //RoundSetup();
     }
 
@@ -86,7 +80,7 @@ public class GameController : MonoBehaviour
                 ActivateButtons();
             else if (playersChoice != null) // i.e. if PlayersChoice() has been hit
             {
-                switch (round)
+                switch (Round)
                 {
                     case 1:
                         CardModel.Suits cardsSuit = player.cards[cardNo].suit;
@@ -139,6 +133,8 @@ public class GameController : MonoBehaviour
 
     private void ActivateButtons()
     {
+        CardStackView view = player.GetComponent<CardStackView>();
+
         // Hide the previous round's buttons // this is now done when the GetPlayersChoice is hit
         //if (cardNo > 0)
         //    rounds[cardNo - 1].SetActive(false);
@@ -147,11 +143,11 @@ public class GameController : MonoBehaviour
         //print("fetchedCardsList[cardNo]: " + fetchedCardsList[cardNo]);
 
         //Vector2 cardPos = new Vector2(player.cards[cardNo].position.x, player.cards[cardNo].position.y);
-        if (cardStackView.fetchedCards.Count > 0) // ie if there are elements in fetchedCards // for some reason this always fails TODO investigate
+        if (view.fetchedCards.Count > 0) // ie if there are elements in fetchedCards // for some reason this always fails TODO investigate
         {
             Debug.Log(rounds[cardNo] + ": "); // will print out "Round 1" etc
 
-            CardModel cardView = cardStackView.fetchedCards.ElementAt(cardNo).Value.Card.GetComponent<CardModel>();
+            CardModel cardView = view.fetchedCards.ElementAt(cardNo).Value.Card.GetComponent<CardModel>();
             //Debug.Log(" ");
             //print("cardNo: " + cardNo + " = " + cardView);
             //Debug.Log(" ");
@@ -176,10 +172,10 @@ public class GameController : MonoBehaviour
             }*/
 
         }
-        else
+        else // DEBUG:
         {
             print("ERROR: " + cardNo + " not found in fetchedCards");
-            foreach (var element in cardStackView.fetchedCards)
+            foreach (var element in view.fetchedCards)
             {
                 print("fetchedCards.element.key : " + element.Key);
             }
@@ -189,30 +185,21 @@ public class GameController : MonoBehaviour
         rounds[cardNo].SetActive(true); // show buttons for that round
     }
 
+    // hit for rounds 1-3, where the player's choice can only be 1 of 2 options
     public void GetPlayersChoice(bool _playersChoice)
     {
         playersChoice = _playersChoice;
         Debug.Log("The player's choice was: " + playersChoice);
 
         rounds[cardNo].SetActive(false); // hides the buttons, as the player has now made their choice!
-
-        player.cards[cardNo].ShowFace = true;
-        cardStackView.fetchedCards.ElementAt(cardNo).Value.IsFaceUp = true;
-        cardStackView.ShowCards();
-
-        //playersChoice = null;
     }
 
     private void /*IEnumerator*/ RoundResult(bool cardBool) // TODO come up with a better var name for this (should not need to use Hungarian Notation)
     {
-        ShowRoundsCard();
-
-        print("Is player correct? " + (playersChoice == cardBool));
-
+        ShowThisRoundsCard();
 
         string drinks;
-
-        if (round < 2) // use singular
+        if (Round < 2) // use singular
             drinks = "DRINK!";
         else // use plural
             drinks = "DRINKS!";
@@ -220,7 +207,7 @@ public class GameController : MonoBehaviour
         if (playersChoice == cardBool) // Player is correct
         {
             resultText = resultTextParent.transform.Find("Give!").gameObject;
-            resultText.GetComponent<TextMeshProUGUI>().text = "GIVE OUT " + round + " " + drinks;
+            resultText.GetComponent<TextMeshProUGUI>().text = "GIVE OUT " + Round + " " + drinks;
         }
         else // Player is incorrect
         {
@@ -232,28 +219,32 @@ public class GameController : MonoBehaviour
             // return;
         }
 
-        // Toggle and show that round's card: TODO FIX!!!
-        //CardStackView view = player.GetComponent<CardStackView>();
-        //view.Toggle(cardView., true);
-
-        ShowResultAndButton(true);
+        ShowResultText(true);
         //TODO make the ShowResult method work this way, i.e. using a WaitForSeconds(X) rather than needing a button press
-        
-        //StartCoroutine("Wait", 10);
-        //StopCoroutine(Wait(5));
-        StartCoroutine(Wait(1.5f));
 
-        
+        StartCoroutine(Wait(1.5f));
     }
 
-    private void ShowRoundsCard()
+    // VERY VERY DEBUG ATM, TODO CLEAN THIS UP
+    private void ShowThisRoundsCard()
     {
+        // cut and pasted over from GetPlayersChoice
+        //cardStackView.fetchedCards.ElementAt(cardNo).Value.IsFaceUp = true;
+        //cardStackView.ShowCards();
+
         player.cards[cardNo].ShowFace = true;
-        cardStackView.ShowCards();
+
+        // Toggle and show that round's card:
+        CardStackView view = player.GetComponent<CardStackView>();
+        view.fetchedCards.ElementAt(cardNo).Value.IsFaceUp = true;
+        view.Toggle(player.cards[cardNo], true);
+
+        //cardStackView.ShowCards();
+        view.ShowCards();
     }
 
     /*private*/
-    IEnumerator Wait(float waitTime = 1.5f)
+    IEnumerator Wait(float waitTime)
     {
         waiting = true;
 
@@ -261,15 +252,14 @@ public class GameController : MonoBehaviour
 
         waiting = false;
 
-        ShowResultAndButton(false);
+        ShowResultText(false);
     }
 
-    public void ShowResultAndButton(bool isShow)
+    public void ShowResultText(bool isShow)
     {
         resultText.SetActive(isShow);
-        doneButton.SetActive(isShow);
 
-        if (!isShow) // i.e. if ShowResultAndButton method was hit by the Done! button
+        if (!isShow) // i.e. if ShowResult method was hit by the Done! button
         {
             Round++;
             //rounds[cardNo].SetActive(false);

@@ -16,24 +16,6 @@ public class CardStackView : MonoBehaviour
     public float posNoise;
     public float rotNoise; // TODO make this actually used (see below)
 
-    public void Toggle(CardModel card, bool isFaceUp) // TODO to be called to from GameController
-    {
-        fetchedCards[card.Index].IsFaceUp = isFaceUp; // TODO what is the difference between this and card.showFace
-        Debug.Log("YOU SHOULD NOT BE HERE.");
-    }
-
-    public void Start()
-    {
-        fetchedCards = new Dictionary<int, CardView>();
-        deck = GetComponent<CardStack>();
-
-        ShowCards();
-        lastCount = deck.CardsCount;
-
-        deck.CardRemoved += deck_CardRemoved;
-        deck.CardAdded += deck_CardAdded;
-    }
-
     // Event Handler
     private void deck_CardRemoved(object sender, CardEventArgs e)
     {
@@ -57,14 +39,47 @@ public class CardStackView : MonoBehaviour
         //}
     }
 
+    public void Start()
+    {
+        fetchedCards = new Dictionary<int, CardView>();
+        deck = GetComponent<CardStack>();
+
+        ShowCards();
+        lastCount = deck.CardsCount;
+
+        deck.CardRemoved += deck_CardRemoved;
+        deck.CardAdded += deck_CardAdded;
+    }
+
     private void Update()
     {
-        if(lastCount != deck.CardsCount) // if something has changed since last update, else dont bother
+        if (lastCount != deck.CardsCount) // if something has changed since last update, else dont bother
         {
             lastCount = deck.CardsCount;
             ShowCards();
         }
+        // ShowCards();
     }
+
+
+    public void Toggle(CardModel card, bool isFaceUp) // TODO to be called to from GameController
+    {
+        fetchedCards[card.Index].IsFaceUp = isFaceUp; // TODO what is the difference between this and card.showFace
+        Debug.Log("YOU SHOULD NOT BE HERE.");
+    }
+
+    public void Clear()
+    {
+        deck.Reset(); // TODO investigate is Reset() being referenced in multiple different locations?
+
+        foreach (CardView view in fetchedCards.Values)
+        {
+            Destroy(view.Card); // destroys the GameObject itself (not just reassign the dictionarys values)
+        }
+
+        fetchedCards.Clear();
+    }
+
 
     private float NextFloat(float range) // specifcally to make either a plus or minus noise value
     {
@@ -130,12 +145,13 @@ public class CardStackView : MonoBehaviour
                 GameObject cardCopyOG = (GameObject)Instantiate(cardPrefab);
                 CardModel cardModel = cardCopyOG.GetComponent<CardModel>(); // what is this doing here?!? Do we still need to do this now that cards is a list of CardModels rather than ints?
                 cardModel.Index = card.Index;
-                cardModel.ShowFace = true;
+                //cardModel.ShowFace = true;
                 //cardModel.ToggleFace(card.ShowFace); // TODO change to !deck.IsDealersHand OR card.ShowFace
                 cardModel.ToggleFace(true); // DEBUG this doesnt do anything
 
             }
-
+            // TODO make an else statement for if card.ShowFace == true (is this possible? it should be, right?)
+            
             return;
         }
         // else:
@@ -152,7 +168,7 @@ public class CardStackView : MonoBehaviour
             SpriteRenderer sp = cardCopy.GetComponent<SpriteRenderer>();
             sp.sortingOrder = 51 - positionalIndex; // reverses the order in which cards are drawn
 
-            fetchedCards.Add(card.Index, new CardView(cardCopy, cardModel.ShowFace));
+            fetchedCards.Add(card.Index, new CardView(cardCopy));
 
             if (cardModel.faces != null)
                 card.faces = cardModel.faces; // TODO this is a very temporary fix for all cardModel objects not having a faces Sprite[] for some reason? INVESTIGATE

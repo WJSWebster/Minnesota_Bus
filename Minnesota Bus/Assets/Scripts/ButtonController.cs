@@ -3,6 +3,8 @@ using UnityEngine.SceneManagement;
 
 public class ButtonController : MonoBehaviour
 {
+    public GameController gameController;
+
     public void PlayGame()
     {
         // loads the next scene in the queue (ie, the game)
@@ -24,6 +26,10 @@ public class ButtonController : MonoBehaviour
 
     public void ResetGame()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); // Reloads the current scene, thereby resetting it
+        //The old method of resetting the game:
+        //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); // Reloads the current scene, thereby resetting it
+
+        gameController = gameController.GetComponent<GameController>();
+        gameController.ResetGame();
     }
 }

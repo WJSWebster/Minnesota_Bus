@@ -42,7 +42,7 @@ public class CardModel : MonoBehaviour
                     //CardFlipper.FlipCard(back, faces[index], index);
                 }
 
-                ToggleFace(value);
+                //ToggleFace(value);
             }
         }
     }

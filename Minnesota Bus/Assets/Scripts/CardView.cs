@@ -7,9 +7,9 @@ public class CardView
     public GameObject Card { get; private set; }
     public bool IsFaceUp { get; set; } // TODO maybe rename this to something like showFace?
 
-    public CardView(GameObject card, bool isFaceUp = false)
+    public CardView(GameObject card)
     {
         Card = card;
-        IsFaceUp = isFaceUp;
+        IsFaceUp = false;
     }
 }

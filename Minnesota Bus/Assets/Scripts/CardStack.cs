@@ -43,25 +43,38 @@ public class CardStack : MonoBehaviour
         if (IsDealersHand)
         {
             cards = new List<CardModel>(52);
-            //cards.Clear(); // TODO is this necessary??
             CreateDeck(); // at beginning of the game, the dealer has all the cards in their hand
             Shuffle();
         }
         else // owner == "Player"
         {
             cards = new List<CardModel>(4); // player begins with no cards and ∴ should not have a deck created or shuffled
-            //cards.Clear(); //TODO is this necessary?
             //CreateDeck();
         }
     }
 
-    void CreateDeck()
+    private void CreateDeck()
     {
+        cards.Clear(); // just an added safety measure incase CreateDeck() called on an already created deck
+
         for (int i = 0; i < cards.Capacity; i++) // cannot use magic numbers now that our list can be one of two sizes
         {
             CardModel temp = new CardModel(i, false); // tODO only false because assumed that this is the dealer's hand (as this method is only ever called here - when creating the dealer's hand of all the cards initially)
 
             cards.Add(temp); // add this temporary card to the 'cards' List of CardModel objects
+        }
+    }
+
+    public void Reset() // if this is all this is doing TODO change name to "ClearCards" and have it called to at beginning of CreateDeck()
+    {
+        if (IsDealersHand) // ...this looks suspiciously similiar to Awake(), TODO REFACTOR
+        {
+            CreateDeck();
+            Shuffle();
+        }
+        else // isPlayersHand
+        {
+            cards.Clear();
         }
     }
 
@@ -71,14 +84,14 @@ public class CardStack : MonoBehaviour
         
         System.Random rand = new System.Random();
         CardModel temp;
-        int target;
+        int targetIndex;
 
         for (int i = 0; i < length; i++)
         {
-            target = i + rand.Next(length - i);
+            targetIndex = i + rand.Next(length - i);
 
-            temp = cards[target];
-            cards[target] = cards[i];
+            temp = cards[targetIndex];
+            cards[targetIndex] = cards[i];
             cards[i] = temp;
         }
     }

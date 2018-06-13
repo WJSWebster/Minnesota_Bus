@@ -142,15 +142,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dealer: {fileID: 1665402534}
   player: {fileID: 2095985395}
-  busMeButton: {fileID: 245603747}
-  doneButton: {fileID: 1282928366}
   rounds:
   - {fileID: 248138998}
   - {fileID: 1995419100}
   - {fileID: 1015958290}
   - {fileID: 1512623184}
   resultTextParent: {fileID: 1474568758}
-  cardStackView: {fileID: 2095985394}
 --- !u!4 &2890475
 Transform:
   m_ObjectHideFlags: 0
@@ -163,6 +160,7 @@ Transform:
   m_Children:
   - {fileID: 68384794}
   - {fileID: 245603748}
+  - {fileID: 157714310}
   m_Father: {fileID: 1363789335}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -372,15 +370,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dealer: {fileID: 1665402534}
   player: {fileID: 2095985395}
-  busMeButton: {fileID: 245603747}
-  doneButton: {fileID: 0}
   rounds:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 1015958290}
   - {fileID: 1512623184}
   resultTextParent: {fileID: 0}
-  cardStackView: {fileID: 0}
 --- !u!114 &68384796
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -565,16 +560,16 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 157714309}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -4.2954307}
+  m_LocalPosition: {x: 0, y: 0, z: -0.0052447007}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1683477919}
-  m_Father: {fileID: 1132119085}
-  m_RootOrder: 1
+  m_Father: {fileID: 2890475}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 118.98145, y: 426.86307}
+  m_AnchoredPosition: {x: 118.938354, y: 425.53723}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &157714311
@@ -616,7 +611,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1132119084}
+      - m_Target: {fileID: 2890474}
         m_MethodName: ResetGame
         m_Mode: 1
         m_Arguments:
@@ -861,11 +856,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dealer: {fileID: 0}
   player: {fileID: 0}
-  busMeButton: {fileID: 0}
-  doneButton: {fileID: 0}
   rounds: []
   resultTextParent: {fileID: 0}
-  cardStackView: {fileID: 0}
 --- !u!114 &245603750
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -994,7 +986,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 153.5, y: -19}
+  m_AnchoredPosition: {x: 198, y: -66.2}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &269453680
@@ -2109,7 +2101,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -55.5, y: -19}
+  m_AnchoredPosition: {x: -68.2, y: -66}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1068142844
@@ -2250,6 +2242,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d2df79a69cc8734db4f6f6f9ce686ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameController: {fileID: 2890474}
 --- !u!4 &1132119085
 Transform:
   m_ObjectHideFlags: 0
@@ -2261,7 +2254,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 482166714}
-  - {fileID: 157714310}
   m_Father: {fileID: 1363789335}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3074,7 +3066,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -158.5, y: -19}
+  m_AnchoredPosition: {x: -202, y: -66.2}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1602651396
@@ -3309,7 +3301,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cards: []
-  cardPrefab: {fileID: 1060619168869186, guid: 3f55cda98a5aa404a9b9a8028e132757, type: 2}
 --- !u!4 &1665402535
 Transform:
   m_ObjectHideFlags: 0
@@ -3576,7 +3567,6 @@ GameObject:
   - component: {fileID: 1729135497}
   - component: {fileID: 1729135496}
   - component: {fileID: 1729135495}
-  - component: {fileID: 1729135494}
   - component: {fileID: 1729135498}
   m_Layer: 0
   m_Name: Card
@@ -3585,18 +3575,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1729135494
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114427207234565186, guid: 3f55cda98a5aa404a9b9a8028e132757,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1729135493}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1729135495
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4063,7 +4041,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 48.5, y: -19}
+  m_AnchoredPosition: {x: 66, y: -66}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2088492982
@@ -4222,7 +4200,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cards: []
-  cardPrefab: {fileID: 1060619168869186, guid: 3f55cda98a5aa404a9b9a8028e132757, type: 2}
 --- !u!4 &2095985396
 Transform:
   m_ObjectHideFlags: 0
