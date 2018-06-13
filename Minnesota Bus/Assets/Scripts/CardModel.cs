@@ -1,54 +1,54 @@
 ﻿using System;
 using UnityEngine;
 
-public class CardModel : MonoBehaviour {
-
-    public SpriteRenderer spriteRenderer;
-
+public class CardModel : MonoBehaviour
+{
     private int index; // the number that will be used to find the appropriate card in the faces array
     public int Index
     {
         get
         {
-            return this.index;
+            return index;
         }
         set
         {
-            this.index = value;
+            index = value;
             UpdateVars();
         }
     }
-
     public Sprite[] faces;
     //public Sprite face; // == null in CardStackViews
     public Sprite back;
-
-    private bool showFace; // the number that will be used to find the appropriate card in the faces array
+    // DEBUG: TODO make this back to private (only currently used in inspector)
+    /*private*/ public bool showFace; // the number that will be used to find the appropriate card in the faces array
     public bool ShowFace
     {
         get
         {
-            return this.showFace;
+            return showFace;
         }
         set
         {
-            this.showFace = value;
+            if(value != showFace)
+            {
+                showFace = value;
 
-            if (value)
-            {
-                // CardFlipper.FlipCard(faces[index], back, index);
-            }
-            else
-            {
-                // CardFlipper.FlipCard(back, faces[index], index);
+                if (value)
+                {
+                    //CardFlipper.FlipCard(faces[index], back, index);
+                }
+                else
+                {
+                    //CardFlipper.FlipCard(back, faces[index], index);
+                }
+
+                ToggleFace(value);
             }
         }
     }
 
-    //public Vector3 position;
-
-    public GameObject cardPrefab; 
-
+    private SpriteRenderer spriteRenderer; // why is this here instead of just GetComponent<>() when actually used?
+    public GameObject cardPrefab;
     public enum Ranks
     {
         Ace,// = 1, // TODO try commenting out these assignments?
@@ -66,7 +66,6 @@ public class CardModel : MonoBehaviour {
         King,// = 13
     };
     public Ranks rank;
-
     public enum Suits
     {
         Hearts,
@@ -77,30 +76,19 @@ public class CardModel : MonoBehaviour {
     public Suits suit;
 
     // Constructor
-    public CardModel(int _index = 0) // currently, the only place this is used is in CardStack:CreateDeck()
+    public CardModel(int _index = 0, bool _showFace = false) // currently, the only place this is used is in CardStack:CreateDeck()
     {
         Index = _index;
 
-        ShowFace = false; // just for the time being, any cards in the player's hand will be made to show their face eventually...
+        //ShowFace = _showFace; // just for the time being, any cards in the player's hand will be made to show their face eventually...
 
         //face = _face;
         //back = _back;
-
-        //spriteRenderer = GetComponent<SpriteRenderer>();
-
-
-        // Debug: this is a test to get the faces from the cardPrefab, which already has a faces List of sprites & cardBack sprite
-        /*GameObject cardCopy = Instantiate(cardPrefab);
-        CardModel cardModel = cardCopy.GetComponent<CardModel>();
-
-        faces = cardModel.faces;
-        Debug.Log("[CONSTRUCTOR]: is faces[] null? = " + (faces == null && faces.Length == 0));
-        cardBack = cardModel.cardBack;*/
     }
 
     void Awake()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>(); // GetComponent only works if attached to a GameObject (i.e. not instantiated)
+        //spriteRenderer = GetComponent<SpriteRenderer>(); // GetComponent only works if attached to a GameObject (i.e. not instantiated)
         UpdateVars();
     }
 
@@ -117,18 +105,16 @@ public class CardModel : MonoBehaviour {
 
     public void ToggleFace(bool showFace)
     {
+        //showFace = ShowFace;
+
         spriteRenderer = GetComponent<SpriteRenderer>(); // GetComponent only works if attached to a GameObject (i.e. not instantiated)
 
         if (showFace)
         {
-            /*Debug.Log("[ToggleFace]: index = " + index);
-            Debug.Log("[ToggleFace]: faces[] is null? = " + (faces == null && faces.Length == 0));*/
-
-            if(faces != null || spriteRenderer.sprite != faces[Index])
+            if (faces != null || spriteRenderer.sprite != faces[Index])
                 spriteRenderer.sprite = faces[Index];
-            //else the sprite is already this face
-
-            //spriteRenderer.sprite = face;
+            else
+                Debug.Log("WARNING[ToggleFace]: This card's sprite is already it's face!");
         }
         else
             spriteRenderer.sprite = back;

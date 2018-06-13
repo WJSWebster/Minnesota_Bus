@@ -3,14 +3,9 @@ using UnityEngine;
 
 public class CardStack : MonoBehaviour
 {
-    private readonly Sprite[] cardFaces;
-    private readonly Sprite cardBack;
-
     public List<CardModel> cards; // temporary added security by providing list size TODO evaluate usefulness
     // TODO cards needs to be made private for security purposes
-
-    public GameObject cardPrefab; // DEBUG: is this the best way to pull in all of the class member assignments of the card? (e.g. the faces array & cardBack)
-
+    
     public bool IsDealersHand
     {
         get { return gameObject.name == "Dealer"; } // pulls the name of the GameObject that this component is attached to
@@ -21,7 +16,8 @@ public class CardStack : MonoBehaviour
         get { return cards != null && cards.Count > 0; } // the first condition means that the second condition is never checked if the first is false (thefore, this condition does not cause OutOfBounds)
     }
 
-    public event CardRemovedEventHandler CardRemoved;
+    public event CardEventHandler CardRemoved;
+    public event CardEventHandler CardAdded;
 
     public int CardsCount
     {
@@ -47,7 +43,7 @@ public class CardStack : MonoBehaviour
         if (IsDealersHand)
         {
             cards = new List<CardModel>(52);
-            cards.Clear();
+            //cards.Clear(); // TODO is this necessary??
             CreateDeck(); // at beginning of the game, the dealer has all the cards in their hand
             Shuffle();
         }
@@ -63,15 +59,9 @@ public class CardStack : MonoBehaviour
     {
         for (int i = 0; i < cards.Capacity; i++) // cannot use magic numbers now that our list can be one of two sizes
         {
-            //GameObject cardCopy = (GameObject)Instantiate(cardPrefab); // instantiate takes in a GameObject and copies it
-            //CardModel cardModel = cardCopy.GetComponent<CardModel>();
-            //Debug.Log(cardModel + " cardBack == null?: " + (cardModel.cardBack == null));
+            CardModel temp = new CardModel(i, false); // tODO only false because assumed that this is the dealer's hand (as this method is only ever called here - when creating the dealer's hand of all the cards initially)
 
-            CardModel temp = new CardModel(i);
-            //Debug.Log(temp + " cardBack == null?: " + (temp.cardBack == null));
-
-            // add this temporary card to the 'cards' List of CardModel objects
-            cards.Add(temp);
+            cards.Add(temp); // add this temporary card to the 'cards' List of CardModel objects
         }
     }
 
@@ -108,7 +98,7 @@ public class CardStack : MonoBehaviour
         cards.RemoveAt(index);
 
         if (CardRemoved != null) // so long as there is atleast one subscriber to the CardRemoved event
-            CardRemoved(this, new CardRemovedEventArgs(temp.Index)); // telling any subscribers to the event that this card has been removed
+            CardRemoved(this, new CardEventArgs(temp)); // telling any subscribers to the event that this card has been removed
 
         return temp;
     }
@@ -116,5 +106,10 @@ public class CardStack : MonoBehaviour
     public void Push(CardModel card)
     {
         cards.Add(card);
+
+        if (CardAdded != null)
+        {
+            CardAdded(this, new CardEventArgs(card));
+        }
     }
 }
