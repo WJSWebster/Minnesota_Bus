@@ -4,34 +4,31 @@ using UnityEngine;
 public class CardFlipper : MonoBehaviour
 {
     private SpriteRenderer spriteRenderer;
-    private CardModel model;
     private float originalXScale;
-    private float originalZPosition;
+    //private float originalZPosition = 0.01f;
 
     public AnimationCurve scaleCurve;
-    public float duration = 0.5f;
+    public float duration = 1f;
 
     void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
-        model = GetComponent<CardModel>();
         originalXScale = transform.localScale.x;
-        originalZPosition = transform.localPosition.z;
+        //originalZPosition = transform.localPosition.z;
     }
 
-    public void FlipCard(Sprite startImage, Sprite endImage, int cardIndex)
-    {
-        // Co-Routines run over multiple frames
-        StopCoroutine(Flip(startImage, endImage, cardIndex));
-        StartCoroutine(Flip(startImage, endImage, cardIndex));
-    }
+    //public void FlipCard(Sprite startImage, Sprite endImage, int cardIndex)
+    //{
+    //    StopCoroutine(Flip(startImage, endImage));
+    //    StartCoroutine(Flip(startImage, startImage));
+    //}
 
-    IEnumerator Flip(Sprite startImage, Sprite endImage, int cardIndex)
+    public IEnumerator Flip(Sprite startImage, Sprite endImage, float duration)
     {
         spriteRenderer.sprite = startImage;
 
         float time = 0f;
-        while (time <= 1f)
+        while (time <= duration)
         {
             time += Time.deltaTime / duration;
             float scale = scaleCurve.Evaluate(time);
@@ -41,26 +38,18 @@ public class CardFlipper : MonoBehaviour
             localScale.x = scale * originalXScale;
             transform.localScale = localScale;
 
-            // moving the card towards/away from the camera (i.e. only moving on the Z axis)
+            // moving the card towards/away from the camera (i.e. only moving on the Z axis)        
             Vector3 localPosition = transform.localPosition;
-            localPosition.z = scale * originalZPosition;
+            localPosition.z = (-1 + scale);  //* originalZPosition;  // because originalZPosition is most likely 0
             transform.localPosition = localPosition;
 
             // if card is halfway through transition, switch card face to card back
-            if (time >= 0.5f)
+            if (time >= (duration / 2))
             {
                 spriteRenderer.sprite = endImage;
             }
 
-            yield return new WaitForFixedUpdate(); // yield pauses execution of the function at this point until the next frame
-        }
-
-        if (cardIndex == -1)
-            model.ToggleFace(false);
-        else
-        {
-            model.Index = cardIndex;
-            model.ToggleFace(true);
+            yield return new WaitForFixedUpdate();  // yield pauses execution of the function at this point until the next frame
         }
     }
 }

@@ -3,17 +3,23 @@ using UnityEngine;
 
 public class CardStack : MonoBehaviour
 {
-    public List<CardModel> cards; // temporary added security by providing list size TODO evaluate usefulness
+    public List<CardModel> cards;  // temporary added security by providing list size TODO evaluate usefulness
     // TODO cards needs to be made private for security purposes
     
     public bool IsDealersHand
     {
-        get { return gameObject.name == "Dealer"; } // pulls the name of the GameObject that this component is attached to
+        get
+        {
+            return gameObject.name == "Dealer";
+        } // pulls the name of the GameObject that this component is attached to
     }
 
     public bool HasCards
     {
-        get { return cards != null && cards.Count > 0; } // the first condition means that the second condition is never checked if the first is false (thefore, this condition does not cause OutOfBounds)
+        get
+        {
+            return cards != null && cards.Count > 0;
+        } // the first condition means that the second condition is never checked if the first is false (thefore, this condition does not cause OutOfBounds)
     }
 
     public event CardEventHandler CardRemoved;
@@ -25,8 +31,8 @@ public class CardStack : MonoBehaviour
         {
             if (cards == null)
                 return 0;
-            else
-                return cards.Count;
+            // else
+            return cards.Count;
         }
     }
 
@@ -43,25 +49,24 @@ public class CardStack : MonoBehaviour
         if (IsDealersHand)
         {
             cards = new List<CardModel>(52);
-            CreateDeck(); // at beginning of the game, the dealer has all the cards in their hand
+            CreateDeck();  // at beginning of the game, the dealer has all the cards in their hand
             Shuffle();
         }
         else // owner == "Player"
         {
-            cards = new List<CardModel>(4); // player begins with no cards and ∴ should not have a deck created or shuffled
-            //CreateDeck();
+            cards = new List<CardModel>(4);  // player begins with no cards and ∴ should not have a deck created or shuffled
         }
     }
 
     private void CreateDeck()
     {
-        cards.Clear(); // just an added safety measure incase CreateDeck() called on an already created deck
+        cards.Clear();  // just an added safety measure incase CreateDeck() called on an already created deck
 
         for (int i = 0; i < cards.Capacity; i++) // cannot use magic numbers now that our list can be one of two sizes
         {
-            CardModel temp = new CardModel(i, false); // tODO only false because assumed that this is the dealer's hand (as this method is only ever called here - when creating the dealer's hand of all the cards initially)
+            CardModel temp = new CardModel(i);
 
-            cards.Add(temp); // add this temporary card to the 'cards' List of CardModel objects
+            cards.Add(temp);  // add this temp CardModel object to the 'cards' List of CardModel objects
         }
     }
 
@@ -110,8 +115,9 @@ public class CardStack : MonoBehaviour
         CardModel temp = cards[index];
         cards.RemoveAt(index);
 
+        // TODO remove reference of CardEventHandler:
         if (CardRemoved != null) // so long as there is atleast one subscriber to the CardRemoved event
-            CardRemoved(this, new CardEventArgs(temp)); // telling any subscribers to the event that this card has been removed
+            CardRemoved(this, new CardEventArgs(temp));  // telling any subscribers to the event that this card has been removed
 
         return temp;
     }
@@ -120,6 +126,7 @@ public class CardStack : MonoBehaviour
     {
         cards.Add(card);
 
+        // TODO remove reference of CardEventHandler:
         if (CardAdded != null)
         {
             CardAdded(this, new CardEventArgs(card));

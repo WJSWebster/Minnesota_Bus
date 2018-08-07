@@ -27,7 +27,7 @@ public class ButtonController : MonoBehaviour
     public void ResetGame()
     {
         //The old method of resetting the game:
-        //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); // Reloads the current scene, thereby resetting it
+        //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);  // Reloads the current scene, thereby resetting it
 
         gameController = gameController.GetComponent<GameController>();
         gameController.ResetGame();

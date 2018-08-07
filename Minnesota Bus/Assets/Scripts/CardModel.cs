@@ -3,7 +3,11 @@ using UnityEngine;
 
 public class CardModel : MonoBehaviour
 {
-    private int index; // the number that will be used to find the appropriate card in the faces array
+    private int index;  // the number that will be used to find the appropriate card in the faces array
+    private bool showFace;  // the number that will be used to find the appropriate card in the faces array
+    private SpriteRenderer spriteRenderer;  // why is this here instead of just GetComponent<>() when actually used?
+    private CardFlipper cardFlipper;
+
     public int Index
     {
         get
@@ -17,41 +21,43 @@ public class CardModel : MonoBehaviour
         }
     }
     public Sprite[] faces;
-    //public Sprite face; // == null in CardStackViews
     public Sprite back;
-    // DEBUG: TODO make this back to private (only currently used in inspector)
-    /*private*/ public bool showFace; // the number that will be used to find the appropriate card in the faces array
+
     public bool ShowFace
     {
         get
         {
             return showFace;
         }
+
         set
         {
-            if(value != showFace)
+            if(value != showFace) // if the value has changed
             {
                 showFace = value;
 
-                if (value)
+                if (value) // if changing ShowFace from false to true:
                 {
-                    //CardFlipper.FlipCard(faces[index], back, index);
+                    StartCoroutine(cardFlipper.Flip(back, faces[index], WaitTime));
                 }
-                else
+                else // if changing ShowFace from true to false:
                 {
-                    //CardFlipper.FlipCard(back, faces[index], index);
+                    StartCoroutine(cardFlipper.Flip(faces[index], back, WaitTime));
                 }
 
-                //ToggleFace(value);
+                //ToggleFace();
+            }
+            else
+            {
+                Debug.Log(GetType().Name + "::" + System.Reflection.MethodBase.GetCurrentMethod().Name + ": " + Name + "'s ShowFace value is already " + value);
             }
         }
     }
 
-    private SpriteRenderer spriteRenderer; // why is this here instead of just GetComponent<>() when actually used?
-    public GameObject cardPrefab;
+    //public GameObject cardPrefab;  // TODO remove
     public enum Ranks
     {
-        Ace,// = 1, // TODO try commenting out these assignments?
+        Ace,// = 1,
         Two,// = 2,
         Three,// = 3,
         Four,// = 4,
@@ -66,6 +72,7 @@ public class CardModel : MonoBehaviour
         King,// = 13
     };
     public Ranks rank;
+
     public enum Suits
     {
         Hearts,
@@ -75,48 +82,68 @@ public class CardModel : MonoBehaviour
     };
     public Suits suit;
 
-    // Constructor
-    public CardModel(int _index = 0, bool _showFace = false) // currently, the only place this is used is in CardStack:CreateDeck()
+    // a simple getter method, mostly used for debug logs
+    public string Name
     {
-        Index = _index;
+        get
+        {
+            return rank + " of " + suit;
+        }
+    }
 
-        //ShowFace = _showFace; // just for the time being, any cards in the player's hand will be made to show their face eventually...
+    public float WaitTime { get; set; }
 
-        //face = _face;
-        //back = _back;
+    // Constructor
+    public CardModel(int _index = 0) // currently, the only place this is used is in CardStack:CreateDeck()
+    {
+        Index = _index;  // in turn, results in a call to UpdateVars()
     }
 
     void Awake()
     {
-        //spriteRenderer = GetComponent<SpriteRenderer>(); // GetComponent only works if attached to a GameObject (i.e. not instantiated)
+        spriteRenderer = GetComponent<SpriteRenderer>();  // GetComponent only works if attached to a GameObject (i.e. not instantiated)
+        cardFlipper = GetComponent<CardFlipper>();
+        WaitTime = 1f;
+
         UpdateVars();
     }
 
     public void UpdateVars()
     {
-        int noOfRanks = Enum.GetNames(typeof(Ranks)).Length; //( == 13)
+        int noOfRanks = Enum.GetNames(typeof(Ranks)).Length;  //( == 13)
 
         rank = (Ranks)(Index % noOfRanks);
-        //Debug.Log("[UPDATEVARS]: rank == " + rank);
-
         suit = (Suits)((int)(Math.Floor((double)(Index / noOfRanks))));
-        //Debug.Log("[UPDATEVARS]: suit == " + suit);
     }
+    
 
-    public void ToggleFace(bool showFace)
+    public void /*IEnumerator*/ ToggleFace()
     {
-        //showFace = ShowFace;
+        //yield return new WaitForSeconds(1f);
 
-        spriteRenderer = GetComponent<SpriteRenderer>(); // GetComponent only works if attached to a GameObject (i.e. not instantiated)
-
-        if (showFace)
+        if (ShowFace)
         {
             if (faces != null || spriteRenderer.sprite != faces[Index])
+            {
                 spriteRenderer.sprite = faces[Index];
+                Debug.Log("CardModel::ToggleFace: " + Name + " just changed ShowFace to: " + ShowFace);
+            }
             else
-                Debug.Log("WARNING[ToggleFace]: This card's sprite is already it's face!");
+            {
+                //Debug.Log("WARNING[ToggleFace]: " + Name + "'s sprite is already it's face!");
+            }
         }
         else
-            spriteRenderer.sprite = back;
+        {
+            if (back != null || spriteRenderer.sprite != back)
+            {
+                spriteRenderer.sprite = back;
+                //Debug.Log("CardModel::ToggleFace: " + Name + " just changed ShowFace to: " + ShowFace + " ...why?");
+            }
+            else
+            {
+                //Debug.Log("WARNING[ToggleFace]: " + Name + "'s sprite is already it's back!");
+            }
+        }
     }
 }

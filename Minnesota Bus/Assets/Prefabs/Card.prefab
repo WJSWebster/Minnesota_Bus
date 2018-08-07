@@ -107,8 +107,6 @@ MonoBehaviour:
   - {fileID: 21300100, guid: 5affe44246bc75747aed7699fcdfc17e, type: 3}
   - {fileID: 21300102, guid: 5affe44246bc75747aed7699fcdfc17e, type: 3}
   back: {fileID: 21300114, guid: 5affe44246bc75747aed7699fcdfc17e, type: 3}
-  showFace: 0
-  cardPrefab: {fileID: 1060619168869186}
   rank: 0
   suit: 0
 --- !u!114 &114905874620839356
