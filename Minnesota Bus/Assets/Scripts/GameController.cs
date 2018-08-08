@@ -3,6 +3,7 @@ using System.Collections;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class GameController : MonoBehaviour
     private CardStackView playersCardStackView;
     private int round;
     private int cardNo;
+    private int noOfDrinks = 0;
     private GameObject resultText;
     private bool? playersChoice;  // is made null at the end of each round, ∴ needs to be a nullable bool
     private CardModel.Suits? playersFinalChoice;  // is made null prior to the final round, ∴ needs to be a nullable bool
@@ -30,13 +32,28 @@ public class GameController : MonoBehaviour
             cardNo = value - 1;
         }
     }
-    
-
     public GameObject dealerObject;
     public GameObject playerObject;
 
     public GameObject[] rounds;
     public GameObject resultTextParent;
+    public GameObject noOfDrinksGameObject;
+    public int NoOfDrinks
+    {
+        get
+        {
+            return noOfDrinks;
+        }
+
+        set
+        {
+            if (value != noOfDrinks)
+            {
+                noOfDrinks = value;
+                noOfDrinksGameObject.GetComponent<TextMeshProUGUI>().text = "Drinks:\n" + noOfDrinks;
+            }
+        }
+    }
 
     private void Start()
     {
@@ -46,10 +63,12 @@ public class GameController : MonoBehaviour
     public void ResetGame()
     {
         Debug.Log("restarting...");
-        StopAllCoroutines();
+        //StopAllCoroutines();
+
         // set any result text to inactive:
-        resultText.SetActive(false);
+        //resultText.SetActive(false);
         //resultTextParent.SetActive(false);
+        //DeactivateText();
 
         playersChoice = null;
         playersFinalChoice = null;
@@ -66,6 +85,15 @@ public class GameController : MonoBehaviour
         dealersCardStackView.Clear();
         
         SetupGame();
+    }
+
+    private void DeactivateText()
+    {
+        resultText = null;
+
+        resultTextParent.transform.Find("Give!").gameObject.SetActive(false);
+        resultTextParent.transform.Find("Correct!").gameObject.SetActive(false);
+        resultTextParent.transform.Find("Drink!").gameObject.SetActive(false);
     }
 
     private void SetupGame()
@@ -93,7 +121,7 @@ public class GameController : MonoBehaviour
         // only update when we know we're not waiting for the result text to finish
         if (!waiting) // TODO this does not seem like the most elegant solution, investigate alternatives
         {
-            if (!rounds[cardNo].activeInHierarchy && playersChoice == null && playersFinalChoice == null) // if buttons not active AND player has not chosen
+            if (Round < 5 && !rounds[cardNo].activeInHierarchy && playersChoice == null && playersFinalChoice == null) // if buttons not active AND player has not chosen
             {
                 Debug.Log("ActivateButtons:: Round " + Round + ", buttons now activating!");
 
@@ -142,15 +170,21 @@ public class GameController : MonoBehaviour
                         break;
                     case 4:
                         roundJudgement = (playersFinalChoice == playersCardStack.cards[cardNo].suit);
+
+                        break;
+                    case 5:
+                        Debug.Log("Congrats, you passed The Gauntlet!");
+                        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
+
                         break;
                     default:
-                        Debug.Log("ERROR: round not 1-4");
+                        Debug.Log("ERROR: round not 1-5");
                         break;
                 }
 
                 if (roundJudgement != null) // then the calculations were successfully completed & roundJudgement was assigned, and now let's see the result
                 {
-                    RoundResult((bool)roundJudgement);
+                    StartCoroutine(CalculateResult((bool)roundJudgement));
                 }
                 else
                     Debug.Log("GameController::Update: ERROR roundJudgement not assigned by end of switch-case!");
@@ -229,10 +263,11 @@ public class GameController : MonoBehaviour
         rounds[cardNo].SetActive(false);  // hides the buttons, as the player has now made their choice!
     }
 
-    private void /*IEnumerator*/ RoundResult(bool cardBool) // TODO come up with a better var name for this (should not need to use Hungarian Notation)
+    private /*void */IEnumerator CalculateResult(bool cardBool) // TODO come up with a better var name for this (should not need to use Hungarian Notation)
     {
         Debug.Log("GameController::RoundResult: round: " + round + ", player's choice: " + playersChoice + ", cardBool: " + cardBool + "  ∴: " + (playersChoice == cardBool));
-
+        DeactivateText(); // TODO should this be here?
+        
         bool playerIsCorrect = (playersChoice == cardBool || (round > 3) && cardBool);
 
         if (playerIsCorrect) // Player is correct
@@ -247,39 +282,43 @@ public class GameController : MonoBehaviour
             //resultText.GetComponent<TextMeshProUGUI>().text = "GIVE OUT " + Round + " " + drinks;
 
             resultText = resultTextParent.transform.Find("Correct!").gameObject;
+            if(round > 3)
+                resultText.GetComponent<TextMeshProUGUI>().text = "CONGRATS, YOU\nPASSED THE\nGAUNTLET!";
         }
         else // Player is incorrect
         {
             resultText = resultTextParent.transform.Find("Drink!").gameObject;
         }
-
         //bool waitingForResults = true;
-        StartCoroutine(WaitForResults());  // TODO this is where the issue is arising!
+        /*StartCoroutine(*/DisplayResult(!playerIsCorrect);  // TODO this is where the issue is arising!
+        StartCoroutine(WaitForDisplayResults());
 
-        //while (waitingForResults)
+        Round++;
+        playersChoice = null;  // TODO i feel like there's a better place for this to go? maybe if setupRound was actually for setting up the round??
+
+        //while (waiting)
         //    yield return new WaitForSeconds(0.1f);
 
         if (!playerIsCorrect)
         {
+            while(waiting)
+                yield return new WaitForSeconds(0.1f);
             Debug.Log("RoundResult:: Your answer was wrong, so we're going to reset");
             ResetGame();
         }
     }
 
-    private IEnumerator WaitForResults()
+    private void DisplayResult(bool wasPlayerWrong)
     {
         waiting = true;
 
-        /*float waitDuration =*/ ShowThisRoundsCard();
+        float waitDuration = ShowThisRoundsCard();
 
         // bool waitingOnResultText = true;
-        StartCoroutine(ShowResultText(1f));  // as ShowThisRoundsCard returns the wait duration of the card flip
+        StartCoroutine(ShowResultText(waitDuration, wasPlayerWrong));  // as ShowThisRoundsCard returns the wait duration of the card flip
 
-        while (waiting) //waitingOnResultText
-            yield return new WaitForSeconds(0.1f);  // waitDuration * 1.5
-
-        Round++;
-        playersChoice = null;  // TODO i feel like there's a better place for this to go? maybe if setupRound was actually for setting up the round??
+        //while (waiting) //waitingOnResultText
+        //    yield return new WaitForSeconds(0.1f);  // waitDuration * 1.5
     }
 
     private float ShowThisRoundsCard()
@@ -296,13 +335,29 @@ public class GameController : MonoBehaviour
         return currentCard.WaitTime;
     }
 
-    private IEnumerator ShowResultText(float waitTime)
+    private IEnumerator ShowResultText(float waitTime, bool playerWasWrong)
     {
         yield return new WaitForSeconds(waitTime / 2);  // wait, so that the result does not show before
         resultText.SetActive(true);
+
+        if (playerWasWrong)
+        {
+            NoOfDrinks++;
+        }
+        else if (round > 3) // and player was correct
+        {
+            waitTime *= 2;
+        }
+
         yield return new WaitForSeconds(waitTime);  // not (waitTime/2) as once the card is fully revealed, we want the text to remain onscreen for a bit longer
-        resultText.SetActive(false);
+        DeactivateText();
 
         waiting = false;
+    }
+
+    private IEnumerator WaitForDisplayResults()
+    {
+        while (waiting)
+            yield return new WaitForSeconds(0.1f);
     }
 }

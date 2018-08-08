@@ -1443,7 +1443,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6b1f59799eca874e89a0eb757ebd398, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  showFace: 0
   faces:
   - {fileID: 21300000, guid: 5affe44246bc75747aed7699fcdfc17e, type: 3}
   - {fileID: 21300002, guid: 5affe44246bc75747aed7699fcdfc17e, type: 3}
@@ -1498,7 +1497,6 @@ MonoBehaviour:
   - {fileID: 21300100, guid: 5affe44246bc75747aed7699fcdfc17e, type: 3}
   - {fileID: 21300102, guid: 5affe44246bc75747aed7699fcdfc17e, type: 3}
   back: {fileID: 21300114, guid: 5affe44246bc75747aed7699fcdfc17e, type: 3}
-  cardPrefab: {fileID: 363645410}
   rank: 0
   suit: 0
 --- !u!212 &363645413
@@ -2134,7 +2132,7 @@ Camera:
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
-  m_AllowMSAA: 1
+  m_AllowMSAA: 0
   m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
   m_OcclusionCulling: 0
@@ -2147,7 +2145,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 453682038}
   m_LocalRotation: {x: -0.12827638, y: 0, z: 0, w: 0.9917385}
-  m_LocalPosition: {x: -0.4, y: -1.25, z: -2.5}
+  m_LocalPosition: {x: -0.4, y: -1.24, z: -2.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -2287,7 +2285,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6b1f59799eca874e89a0eb757ebd398, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  showFace: 0
   faces:
   - {fileID: 21300000, guid: 5affe44246bc75747aed7699fcdfc17e, type: 3}
   - {fileID: 21300002, guid: 5affe44246bc75747aed7699fcdfc17e, type: 3}
@@ -2342,7 +2339,6 @@ MonoBehaviour:
   - {fileID: 21300100, guid: 5affe44246bc75747aed7699fcdfc17e, type: 3}
   - {fileID: 21300102, guid: 5affe44246bc75747aed7699fcdfc17e, type: 3}
   back: {fileID: 21300114, guid: 5affe44246bc75747aed7699fcdfc17e, type: 3}
-  cardPrefab: {fileID: 627120109}
   rank: 0
   suit: 0
 --- !u!212 &627120112
@@ -2831,7 +2827,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6b1f59799eca874e89a0eb757ebd398, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  showFace: 0
   faces:
   - {fileID: 21300000, guid: 5affe44246bc75747aed7699fcdfc17e, type: 3}
   - {fileID: 21300002, guid: 5affe44246bc75747aed7699fcdfc17e, type: 3}
@@ -2886,7 +2881,6 @@ MonoBehaviour:
   - {fileID: 21300100, guid: 5affe44246bc75747aed7699fcdfc17e, type: 3}
   - {fileID: 21300102, guid: 5affe44246bc75747aed7699fcdfc17e, type: 3}
   back: {fileID: 21300114, guid: 5affe44246bc75747aed7699fcdfc17e, type: 3}
-  cardPrefab: {fileID: 910676724}
   rank: 0
   suit: 0
 --- !u!212 &910676727
@@ -3659,7 +3653,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6b1f59799eca874e89a0eb757ebd398, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  showFace: 0
   faces:
   - {fileID: 21300000, guid: 5affe44246bc75747aed7699fcdfc17e, type: 3}
   - {fileID: 21300002, guid: 5affe44246bc75747aed7699fcdfc17e, type: 3}
@@ -3714,7 +3707,6 @@ MonoBehaviour:
   - {fileID: 21300100, guid: 5affe44246bc75747aed7699fcdfc17e, type: 3}
   - {fileID: 21300102, guid: 5affe44246bc75747aed7699fcdfc17e, type: 3}
   back: {fileID: 21300114, guid: 5affe44246bc75747aed7699fcdfc17e, type: 3}
-  cardPrefab: {fileID: 1450256152}
   rank: 0
   suit: 0
 --- !u!212 &1450256155
@@ -3884,7 +3876,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6b1f59799eca874e89a0eb757ebd398, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  showFace: 0
   faces:
   - {fileID: 21300000, guid: 5affe44246bc75747aed7699fcdfc17e, type: 3}
   - {fileID: 21300002, guid: 5affe44246bc75747aed7699fcdfc17e, type: 3}
@@ -3939,7 +3930,6 @@ MonoBehaviour:
   - {fileID: 21300100, guid: 5affe44246bc75747aed7699fcdfc17e, type: 3}
   - {fileID: 21300102, guid: 5affe44246bc75747aed7699fcdfc17e, type: 3}
   back: {fileID: 21300114, guid: 5affe44246bc75747aed7699fcdfc17e, type: 3}
-  cardPrefab: {fileID: 1579785819}
   rank: 0
   suit: 0
 --- !u!212 &1579785822
@@ -4015,7 +4005,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6b1f59799eca874e89a0eb757ebd398, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  showFace: 0
   faces:
   - {fileID: 21300000, guid: 5affe44246bc75747aed7699fcdfc17e, type: 3}
   - {fileID: 21300002, guid: 5affe44246bc75747aed7699fcdfc17e, type: 3}
@@ -4070,7 +4059,6 @@ MonoBehaviour:
   - {fileID: 21300100, guid: 5affe44246bc75747aed7699fcdfc17e, type: 3}
   - {fileID: 21300102, guid: 5affe44246bc75747aed7699fcdfc17e, type: 3}
   back: {fileID: 21300114, guid: 5affe44246bc75747aed7699fcdfc17e, type: 3}
-  cardPrefab: {fileID: 1633280825}
   rank: 0
   suit: 0
 --- !u!212 &1633280828
@@ -4727,7 +4715,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6b1f59799eca874e89a0eb757ebd398, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  showFace: 0
   faces:
   - {fileID: 21300000, guid: 5affe44246bc75747aed7699fcdfc17e, type: 3}
   - {fileID: 21300002, guid: 5affe44246bc75747aed7699fcdfc17e, type: 3}
@@ -4782,7 +4769,6 @@ MonoBehaviour:
   - {fileID: 21300100, guid: 5affe44246bc75747aed7699fcdfc17e, type: 3}
   - {fileID: 21300102, guid: 5affe44246bc75747aed7699fcdfc17e, type: 3}
   back: {fileID: 21300114, guid: 5affe44246bc75747aed7699fcdfc17e, type: 3}
-  cardPrefab: {fileID: 1781755235}
   rank: 0
   suit: 0
 --- !u!212 &1781755238
@@ -5013,7 +4999,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6b1f59799eca874e89a0eb757ebd398, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  showFace: 0
   faces:
   - {fileID: 21300000, guid: 5affe44246bc75747aed7699fcdfc17e, type: 3}
   - {fileID: 21300002, guid: 5affe44246bc75747aed7699fcdfc17e, type: 3}
@@ -5068,7 +5053,6 @@ MonoBehaviour:
   - {fileID: 21300100, guid: 5affe44246bc75747aed7699fcdfc17e, type: 3}
   - {fileID: 21300102, guid: 5affe44246bc75747aed7699fcdfc17e, type: 3}
   back: {fileID: 21300114, guid: 5affe44246bc75747aed7699fcdfc17e, type: 3}
-  cardPrefab: {fileID: 1892154193}
   rank: 0
   suit: 0
 --- !u!212 &1892154196
