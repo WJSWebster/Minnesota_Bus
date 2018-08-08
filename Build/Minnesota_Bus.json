@@ -1,0 +1,14 @@
+{
+"companyName": "DefaultCompany",
+"productName": "Minnesota Bus",
+"dataUrl": "Minnesota_Bus.data.unityweb",
+"asmCodeUrl": "Minnesota_Bus.asm.code.unityweb",
+"asmMemoryUrl": "Minnesota_Bus.asm.memory.unityweb",
+"asmFrameworkUrl": "Minnesota_Bus.asm.framework.unityweb",
+"TOTAL_MEMORY": 268435456,
+"graphicsAPI": ["WebGL 2.0", "WebGL 1.0"],
+"webglContextAttributes": {"preserveDrawingBuffer": false},
+"backgroundUrl": "Minnesota_Bus.jpg",
+"splashScreenStyle": "Dark",
+"backgroundColor": "#FFFFFF"
+}
