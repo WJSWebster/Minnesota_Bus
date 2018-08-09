@@ -18,6 +18,7 @@ public class GameController : MonoBehaviour
     private bool? playersChoice;  // is made null at the end of each round, ∴ needs to be a nullable bool
     private CardModel.Suits? playersFinalChoice;  // is made null prior to the final round, ∴ needs to be a nullable bool
     private bool waiting;
+    private AudioManager audioManager;
 
     public int Round
     {
@@ -55,6 +56,7 @@ public class GameController : MonoBehaviour
         }
     }
 
+
     private void Start()
     {
         SetupGame();
@@ -62,7 +64,7 @@ public class GameController : MonoBehaviour
 
     public void ResetGame()
     {
-        Debug.Log("restarting...");
+        audioManager.Play("Shuffle" + GenRandInt(1, 3));
         //StopAllCoroutines();
 
         // set any result text to inactive:
@@ -87,6 +89,15 @@ public class GameController : MonoBehaviour
         SetupGame();
     }
 
+    private int GenRandInt(int min, int max)
+    {
+        System.Random rand = new System.Random((int)DateTime.Now.Ticks);
+        int randNo = rand.Next(min, max + 1);
+
+        Debug.Log("random number generated from (" + min + " - " + max + "): " + randNo);
+        return randNo;
+    }
+
     private void DeactivateText()
     {
         resultText = null;
@@ -98,6 +109,8 @@ public class GameController : MonoBehaviour
 
     private void SetupGame()
     {
+        audioManager = FindObjectOfType<AudioManager>();
+
         playersCardStack = playerObject.GetComponent<CardStack>();
         dealersCardStack = dealerObject.GetComponent<CardStack>();
         playersCardStackView = playerObject.GetComponent<CardStackView>();
@@ -123,14 +136,10 @@ public class GameController : MonoBehaviour
         {
             if (Round < 5 && !rounds[cardNo].activeInHierarchy && playersChoice == null && playersFinalChoice == null) // if buttons not active AND player has not chosen
             {
-                Debug.Log("ActivateButtons:: Round " + Round + ", buttons now activating!");
-
                 ActivateButtons();
             }
             else if (playersChoice != null || playersFinalChoice != null) // i.e. if PlayersChoice() has been hit
             {
-                Debug.Log("Switch-Case:: Round " + Round + ": playersChoice: " + playersChoice + ", playersFinalChoice: " + playersFinalChoice);
-
                 bool? roundJudgement = null;
 
                 switch (Round)
@@ -207,7 +216,7 @@ public class GameController : MonoBehaviour
             //Debug.Log("Round " + Round + ": ");  // will print out "Round 1" etc
 
             CardModel currentCard = playersCardStackView.fetchedCards.ElementAt(cardNo).Value.Card.GetComponent<CardModel>();
-            print("cardNo: " + cardNo + " = " + currentCard.Name);
+            Debug.Log("cardNo: " + cardNo + " = " + currentCard.Name);
 
             //Vector2 cardPos = new Vector2(currentCard.transform.position.x, currentCard.transform.position.y);
 
@@ -232,10 +241,10 @@ public class GameController : MonoBehaviour
         }
         else // DEBUG:
         {
-            print("ERROR: " + cardNo + " not found in fetchedCards");
+            Debug.Log("ERROR: " + cardNo + " not found in fetchedCards");
             foreach (var element in playersCardStackView.fetchedCards)
             {
-                print("fetchedCards.element.key : " + element.Key);
+                Debug.Log("fetchedCards.element.key : " + element.Key);
             }
             //print("fetchedCards: " + cardStackView.fetchedCards);
         }
@@ -301,7 +310,10 @@ public class GameController : MonoBehaviour
 
         if (!playerIsCorrect)
         {
-            while(waiting)
+            audioManager.Play("Drink");
+            //NoOfDrinks++;
+
+            while (waiting)
                 yield return new WaitForSeconds(0.1f);
             Debug.Log("RoundResult:: Your answer was wrong, so we're going to reset");
             ResetGame();
@@ -332,6 +344,12 @@ public class GameController : MonoBehaviour
         // Toggle and show that round's card:
         currentCard.ShowFace = true;  // will, in turn, enact the coroutine Flip
 
+        // generate random number for card flip sound effect
+        int randNumber = GenRandInt(1, 3); // todo: or however many card flip sound effects there are
+
+        // play card flip sound:
+        audioManager.Play("Flip" + randNumber);
+
         return currentCard.WaitTime;
     }
 
@@ -342,6 +360,7 @@ public class GameController : MonoBehaviour
 
         if (playerWasWrong)
         {
+            audioManager.Play("Drink");
             NoOfDrinks++;
         }
         else if (round > 3) // and player was correct

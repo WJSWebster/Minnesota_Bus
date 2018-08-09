@@ -12,6 +12,6 @@ EditorBuildSettings:
     path: Assets/Scenes/Menu.unity
     guid: c9e7590165fdc8d4ea03d44cc2f62b60
   - enabled: 1
-    path: Assets/Scenes/Deck Test.unity
+    path: Assets/Scenes/The Gauntlet.unity
     guid: 15b31022e86295b40a1ee64494799e0c
   m_configObjects: {}
