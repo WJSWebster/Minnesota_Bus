@@ -55,7 +55,8 @@ public class GameController : MonoBehaviour
             }
         }
     }
-
+    // TODO: Temp - needs to be moved into a ButtonController along with all the button position calculations
+    public GameObject mainCamera;
 
     private void Start()
     {
@@ -89,12 +90,13 @@ public class GameController : MonoBehaviour
         SetupGame();
     }
 
+    // Only used for picking 1 of 3 shuffle sound effects
     private int GenRandInt(int min, int max)
     {
         System.Random rand = new System.Random((int)DateTime.Now.Ticks);
         int randNo = rand.Next(min, max + 1);
 
-        Debug.Log("random number generated from (" + min + " - " + max + "): " + randNo);
+        //Debug.Log("random number generated from (" + min + " - " + max + "): " + randNo);
         return randNo;
     }
 
@@ -145,28 +147,28 @@ public class GameController : MonoBehaviour
                 switch (Round)
                 {
                     case 1:
-                        CardModel.Suits cardsSuit = playersCardStack.cards[cardNo].suit;
+                        CardModel.Suits cardsSuit = playersCardStack.GetCards().ElementAt(cardNo).suit;
                         roundJudgement = (cardsSuit == CardModel.Suits.Hearts || cardsSuit == CardModel.Suits.Diamonds);
                         
                         break;
                     case 2:
-                        roundJudgement = (playersCardStack.cards[cardNo].rank > playersCardStack.cards[cardNo - 1].rank);
+                        roundJudgement = (playersCardStack.GetCards().ElementAt(cardNo).rank > playersCardStack.GetCards().ElementAt(cardNo - 1).rank);
 
                         break;
                     case 3:
-                        CardModel.Ranks currCard = playersCardStack.cards[cardNo].rank;
+                        CardModel.Ranks currCard = playersCardStack.GetCards().ElementAt(cardNo).rank;
                         CardModel.Ranks lowCard;
                         CardModel.Ranks highCard;
 
-                        if (playersCardStack.cards[cardNo - 1].rank > playersCardStack.cards[cardNo - 2].rank) // the last card is larger than the card before it
+                        if (playersCardStack.GetCards().ElementAt(cardNo - 1).rank > playersCardStack.GetCards().ElementAt(cardNo - 2).rank) // the last card is larger than the card before it
                         {
-                            lowCard = playersCardStack.cards[cardNo - 2].rank;
-                            highCard = playersCardStack.cards[cardNo - 1].rank;
+                            lowCard = playersCardStack.GetCards().ElementAt(cardNo - 2).rank;
+                            highCard = playersCardStack.GetCards().ElementAt(cardNo - 1).rank;
                         }
                         else // the card before last is either larger than or equal to the last card
                         {
-                            lowCard = playersCardStack.cards[cardNo - 1].rank;
-                            highCard = playersCardStack.cards[cardNo - 2].rank;
+                            lowCard = playersCardStack.GetCards().ElementAt(cardNo - 1).rank;
+                            highCard = playersCardStack.GetCards().ElementAt(cardNo - 2).rank;
                         }
 
                         int highCardValue = Array.IndexOf(Enum.GetValues(highCard.GetType()), highCard);
@@ -178,7 +180,7 @@ public class GameController : MonoBehaviour
 
                         break;
                     case 4:
-                        roundJudgement = (playersFinalChoice == playersCardStack.cards[cardNo].suit);
+                        roundJudgement = (playersFinalChoice == playersCardStack.GetCards().ElementAt(cardNo).suit);
 
                         break;
                     case 5:
@@ -203,40 +205,60 @@ public class GameController : MonoBehaviour
 
     private void ActivateButtons()
     {
-        // Hide the previous round's buttons // this is now done when the GetPlayersChoice is hit
-        //if (cardNo > 0)
-        //    rounds[cardNo - 1].SetActive(false);
+        // TODO: this should be moved to ButtonController, with a function call here instead
 
-        //var fetchedCardsList = playersCardStackView.fetchedCards.Values.ToList();
-        //print("fetchedCardsList[cardNo]: " + fetchedCardsList[cardNo]);
-
-        //Vector2 cardPos = new Vector2(player.cards[cardNo].position.x, player.cards[cardNo].position.y);
         if (playersCardStackView.fetchedCards.Count > 0) // ie if there are elements in fetchedCards
         {
-            //Debug.Log("Round " + Round + ": ");  // will print out "Round 1" etc
-
             CardModel currentCard = playersCardStackView.fetchedCards.ElementAt(cardNo).Value.Card.GetComponent<CardModel>();
             Debug.Log("cardNo: " + cardNo + " = " + currentCard.Name);
 
-            //Vector2 cardPos = new Vector2(currentCard.transform.position.x, currentCard.transform.position.y);
+            float cardYGap = 30f;
+            float cardXGap = cardYGap / 2;
 
-            // TODO: this should be moved to ButtonController, with a function call here instead
-            /*int buttonCount = rounds[cardNo].transform.childCount;  // gets the total number of buttons for that round
+            //Vector2 cardPos = new Vector2(currentCard.transform.position.x, currentCard.transform.position.y);
+            Vector2 cardPos = mainCamera.GetComponent<Camera>().WorldToScreenPoint(currentCard.transform.position);
+
+            int buttonCount = rounds[cardNo].transform.childCount;  // gets the total number of buttons for that round
             int buttonNo = 0;
 
             foreach (Transform button in rounds[cardNo].transform)
             {
                 Debug.Log("Button: " + button);  // prints out what button in that round is currently being used
+                float buttonHeight = button.GetComponent<RectTransform>().sizeDelta.y + cardYGap;
+                float buttonXPos = cardPos.x;
+                float buttonYPos = cardPos.y;
 
-                float buttonScale = button.localScale.y;
-                float buttonXPos = cardPos.x;  // FIX this is where the issue arises!
-                float buttonYPos = (cardPos.y - buttonScale) + (buttonNo * buttonScale);
+                switch (buttonCount)
+                {
+                    case 2:
+                        //buttonXPos = cardPos.x;
+                        buttonYPos = (cardPos.y + (buttonHeight / 2)) - (buttonNo * buttonHeight);
 
-                button.position += new Vector3(buttonXPos, buttonYPos);
-                //button.
+                        break;
+                    case 4:
+                        if (buttonNo == 0 || buttonNo == buttonCount - 1)
+                        {
+                            int heightMultiplier = (buttonNo == 0) ? buttonNo : 1;
+                            buttonYPos = (cardPos.y + (buttonHeight / 2)) - (heightMultiplier * buttonHeight);
+                        }
+                        else // buttonYPos = cardPos.y
+                        {
+                            float buttonWidth = button.GetComponent<RectTransform>().sizeDelta.x + cardXGap;
+
+                            buttonXPos = (cardPos.x + (buttonWidth / 2)) - ((buttonNo - 1) * buttonWidth);
+                        }
+
+                        break;
+                    default:
+                        Debug.LogWarning("Unexpected No of Buttons: " + buttonCount);
+
+                        break;
+                }
+                
+                button.position = new Vector3(buttonXPos, buttonYPos);
 
                 buttonNo++;
-            }*/
+            }
 
         }
         else // DEBUG:
@@ -276,11 +298,13 @@ public class GameController : MonoBehaviour
     {
         Debug.Log("GameController::RoundResult: round: " + round + ", player's choice: " + playersChoice + ", cardBool: " + cardBool + "  ∴: " + (playersChoice == cardBool));
         DeactivateText(); // TODO should this be here?
-        
-        bool playerIsCorrect = (playersChoice == cardBool || (round > 3) && cardBool);
+
+        // if is round 4, the isPlayerCorrect is cardBool arg, else if round == [1 - 3], playerIsCorrect is if the player's choice == cardbool: 
+        bool playerIsCorrect = round > 3 ? cardBool : playersChoice == cardBool;
 
         if (playerIsCorrect) // Player is correct
         {
+            // TODO for multiplayer games:
             //string drinks;
             //if (Round < 2) // use singular
             //    drinks = "DRINK!";
@@ -298,19 +322,16 @@ public class GameController : MonoBehaviour
         {
             resultText = resultTextParent.transform.Find("Drink!").gameObject;
         }
-        //bool waitingForResults = true;
-        /*StartCoroutine(*/DisplayResult(!playerIsCorrect);  // TODO this is where the issue is arising!
+
+        DisplayResult(!playerIsCorrect);  // TODO this is where the issue is arising!
         StartCoroutine(WaitForDisplayResults());
 
         Round++;
         playersChoice = null;  // TODO i feel like there's a better place for this to go? maybe if setupRound was actually for setting up the round??
-
-        //while (waiting)
-        //    yield return new WaitForSeconds(0.1f);
+        
 
         if (!playerIsCorrect)
         {
-            audioManager.Play("Drink");
             //NoOfDrinks++;
 
             while (waiting)
@@ -365,7 +386,7 @@ public class GameController : MonoBehaviour
         }
         else if (round > 3) // and player was correct
         {
-            waitTime *= 2;
+            waitTime *= 3;
         }
 
         yield return new WaitForSeconds(waitTime);  // not (waitTime/2) as once the card is fully revealed, we want the text to remain onscreen for a bit longer

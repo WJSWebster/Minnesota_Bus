@@ -49,27 +49,26 @@ public class CardModel : MonoBehaviour
             }
             else
             {
-                Debug.Log(GetType().Name + "::" + System.Reflection.MethodBase.GetCurrentMethod().Name + ": " + Name + "'s ShowFace value is already " + value);
+                Debug.LogWarning(GetType().Name + "::" + System.Reflection.MethodBase.GetCurrentMethod().Name + ": " + Name + "'s ShowFace value is already " + value);
             }
         }
     }
 
-    //public GameObject cardPrefab;  // TODO remove
     public enum Ranks
     {
-        Ace,// = 1,
-        Two,// = 2,
-        Three,// = 3,
-        Four,// = 4,
-        Five,// = 5,
-        Six,// = 6,
-        Seven,// = 7,
-        Eight,// = 8,
-        Nine,// = 9,
-        Ten,// = 10,
-        Jack,// = 11,
-        Queen,// = 12,
-        King,// = 13
+        Ace,
+        Two,
+        Three,
+        Four,
+        Five,
+        Six,
+        Seven,
+        Eight,
+        Nine,
+        Ten,
+        Jack,
+        Queen,
+        King,
     };
     public Ranks rank;
 
@@ -115,12 +114,10 @@ public class CardModel : MonoBehaviour
         rank = (Ranks)(Index % noOfRanks);
         suit = (Suits)((int)(Math.Floor((double)(Index / noOfRanks))));
     }
-    
 
-    public void /*IEnumerator*/ ToggleFace()
+
+    public void ToggleFace()
     {
-        //yield return new WaitForSeconds(1f);
-
         if (ShowFace)
         {
             if (faces != null || spriteRenderer.sprite != faces[Index])
@@ -128,22 +125,15 @@ public class CardModel : MonoBehaviour
                 spriteRenderer.sprite = faces[Index];
                 Debug.Log("CardModel::ToggleFace: " + Name + " just changed ShowFace to: " + ShowFace);
             }
-            else
-            {
-                //Debug.Log("WARNING[ToggleFace]: " + Name + "'s sprite is already it's face!");
-            }
+        }
+        else if (back != null || spriteRenderer.sprite != back)
+        {
+            spriteRenderer.sprite = back;
+            //Debug.Log("CardModel::ToggleFace: " + Name + " just changed ShowFace to: " + ShowFace + " ...why?");
         }
         else
         {
-            if (back != null || spriteRenderer.sprite != back)
-            {
-                spriteRenderer.sprite = back;
-                //Debug.Log("CardModel::ToggleFace: " + Name + " just changed ShowFace to: " + ShowFace + " ...why?");
-            }
-            else
-            {
-                //Debug.Log("WARNING[ToggleFace]: " + Name + "'s sprite is already it's back!");
-            }
+            Debug.LogWarning("CardModel::ToggleFace: neither ShowFace nor variables assigned!");
         }
     }
 }

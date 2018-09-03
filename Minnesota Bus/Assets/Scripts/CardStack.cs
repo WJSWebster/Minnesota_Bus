@@ -3,8 +3,7 @@ using UnityEngine;
 
 public class CardStack : MonoBehaviour
 {
-    public List<CardModel> cards;  // temporary added security by providing list size TODO evaluate usefulness
-    // TODO cards needs to be made private for security purposes
+    private List<CardModel> cards;
     
     public bool IsDealersHand
     {
@@ -46,15 +45,32 @@ public class CardStack : MonoBehaviour
 
     void Awake()
     {
+        cards = IsDealersHand ? new List<CardModel>(52) : new List<CardModel>(4);
+
+        //if (IsDealersHand)
+        //{
+        //    cards = new List<CardModel>(52);
+        //    CreateDeck();  // at beginning of the game, the dealer has all the cards in their hand
+        //    Shuffle();
+        //}
+        //else // owner == "Player"
+        //{
+        //    cards = new List<CardModel>(4);  // player begins with no cards and ∴ should not have a deck created or shuffled
+        //}
+
+        Setup();
+    }
+
+    public void Setup()
+    {
         if (IsDealersHand)
         {
-            cards = new List<CardModel>(52);
-            CreateDeck();  // at beginning of the game, the dealer has all the cards in their hand
+            CreateDeck();
             Shuffle();
         }
-        else // owner == "Player"
+        else // isPlayersHand
         {
-            cards = new List<CardModel>(4);  // player begins with no cards and ∴ should not have a deck created or shuffled
+            cards.Clear();
         }
     }
 
@@ -67,19 +83,6 @@ public class CardStack : MonoBehaviour
             CardModel temp = new CardModel(i);
 
             cards.Add(temp);  // add this temp CardModel object to the 'cards' List of CardModel objects
-        }
-    }
-
-    public void Reset() // if this is all this is doing TODO change name to "ClearCards" and have it called to at beginning of CreateDeck()
-    {
-        if (IsDealersHand) // ...this looks suspiciously similiar to Awake(), TODO REFACTOR
-        {
-            CreateDeck();
-            Shuffle();
-        }
-        else // isPlayersHand
-        {
-            cards.Clear();
         }
     }
 

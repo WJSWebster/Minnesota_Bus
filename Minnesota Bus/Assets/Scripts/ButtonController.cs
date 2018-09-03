@@ -20,16 +20,12 @@ public class ButtonController : MonoBehaviour
     public void ReturnToMenu()
     {
         // loads the previous scene in the queue (ie, the main menu)
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
-        // Could also do: SceneManager.LoadScene(0);
+        SceneManager.LoadScene(0);
     }
 
     public void ResetGame()
     {
-        //The old method of resetting the game:
-        //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);  // Reloads the current scene, thereby resetting it
-
-        gameController = gameController.GetComponent<GameController>();
+        //gameController = gameController.GetComponent<GameController>();
         gameController.ResetGame();
     }
 }

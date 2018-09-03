@@ -72,7 +72,7 @@ public class CardStackView : MonoBehaviour
 
     public void Clear()
     {
-        deck.Reset();  // TODO investigate is Reset() being referenced in multiple different locations?
+        deck.Setup();  // TODO investigate is Reset() being referenced in multiple different locations?
 
         foreach (CardView view in fetchedCards.Values)
         {
@@ -91,7 +91,7 @@ public class CardStackView : MonoBehaviour
 
     public void ShowCards()
     {
-        if(deck.HasCards) // checks that deck list is populated before continueing
+        if(deck != null && deck.HasCards) // checks that deck list is populated before continueing
         {
             int cardNo = 0;
             Vector3 position = new Vector3(0, 0, 0);

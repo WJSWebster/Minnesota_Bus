@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class CardFlipper : MonoBehaviour
 {
-    private SpriteRenderer spriteRenderer;
+    private SpriteRenderer SpriteRenderer { get { return GetComponent<SpriteRenderer>(); } }
     private float originalXScale;
     //private float originalZPosition = 0.01f;
 
@@ -12,7 +12,6 @@ public class CardFlipper : MonoBehaviour
 
     void Awake()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
         originalXScale = transform.localScale.x;
         //originalZPosition = transform.localPosition.z;
     }
@@ -25,7 +24,7 @@ public class CardFlipper : MonoBehaviour
 
     public IEnumerator Flip(Sprite startImage, Sprite endImage, float duration)
     {
-        spriteRenderer.sprite = startImage;
+        SpriteRenderer.sprite = startImage;
 
         float time = 0f;
         while (time <= duration)
@@ -46,7 +45,7 @@ public class CardFlipper : MonoBehaviour
             // if card is halfway through transition, switch card face to card back
             if (time >= (duration / 2))
             {
-                spriteRenderer.sprite = endImage;
+                SpriteRenderer.sprite = endImage;
             }
 
             yield return new WaitForFixedUpdate();  // yield pauses execution of the function at this point until the next frame

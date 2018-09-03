@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Audio;
 
-[System.Serializable] // because is a custom class
+[System.Serializable] // lets you embed a class with sub properties in the inspector.
 public class Sound {
     public string name;
 
